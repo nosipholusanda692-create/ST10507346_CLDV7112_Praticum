@@ -1,0 +1,39 @@
+@model List<MediaItem>
+@{ ViewData["Title"] = "Media"; }
+
+<h2>Drone images &amp; farm media</h2>
+
+@if (User.IsInRole("Admin") || User.IsInRole("Farmer"))
+{
+    <form asp-action="Upload" method="post" enctype="multipart/form-data" class="row g-2 mb-4">
+        <div class="col-auto"><input type="file" name="file" class="form-control" /></div>
+        <div class="col-auto"><button class="btn btn-success">Upload to Blob Storage</button></div>
+    </form>
+}
+else
+{
+    <p class="text-muted">Your role can view media but not upload.</p>
+}
+
+<table class="table table-sm table-striped align-middle">
+    <thead><tr><th></th><th>File</th><th>Size</th><th>Uploaded by</th><th>Uploaded (UTC)</th><th>Processed</th></tr></thead>
+    <tbody>
+    @foreach (var m in Model)
+    {
+        <tr>
+            <td style="width:70px">
+                @if (m.IsImage) { <img src="@m.Url" style="height:48px" alt="" /> }
+            </td>
+            <td><a href="@m.Url" target="_blank" rel="noopener">@m.OriginalName</a></td>
+            <td>@((m.SizeBytes / 1024.0).ToString("N0")) KB</td>
+            <td>@m.UploadedBy</td>
+            <td>@m.UploadedOn?.UtcDateTime.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>@(m.Processed ? "Yes" : "Pending")</td>
+        </tr>
+    }
+    </tbody>
+</table>
+@if (!Model.Any())
+{
+    <p class="text-muted">No media uploaded yet.</p>
+}

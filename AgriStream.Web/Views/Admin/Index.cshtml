@@ -1,0 +1,31 @@
+@model AdminVm
+@{ ViewData["Title"] = "User management"; }
+
+<h2>User management</h2>
+<p class="text-muted">Users and roles are stored in Azure SQL Database.</p>
+
+<table class="table table-sm align-middle">
+    <thead><tr><th>Username</th><th>Role</th><th>Created (UTC)</th><th>Change role</th></tr></thead>
+    <tbody>
+    @foreach (var u in Model.Users)
+    {
+        <tr>
+            <td>@u.Username</td>
+            <td>@u.Role?.Name</td>
+            <td>@u.CreatedUtc.ToString("yyyy-MM-dd HH:mm")</td>
+            <td>
+                <form asp-action="ChangeRole" method="post" class="d-flex gap-2">
+                    <input type="hidden" name="id" value="@u.Id" />
+                    <select name="roleId" class="form-select form-select-sm" style="width:160px">
+                        @foreach (var r in Model.Roles)
+                        {
+                            <option value="@r.Id" selected="@(r.Id == u.RoleId)">@r.Name</option>
+                        }
+                    </select>
+                    <button class="btn btn-sm btn-outline-success">Save</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

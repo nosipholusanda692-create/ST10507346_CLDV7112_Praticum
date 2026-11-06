@@ -1,0 +1,13 @@
+# .NET build output
+**/bin/
+**/obj/
+.vs/
+
+# User-specific files
+*.user
+*.suo
+
+# Local credentials and machine-specific settings
+AgriStream.Functions/local.settings.json
+AgriStream.Web/appsettings.json
+AgriStream.Web/appsettings.Development.json

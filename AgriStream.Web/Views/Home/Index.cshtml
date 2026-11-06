@@ -1,0 +1,39 @@
+@model TelemetryPageVm
+@{ ViewData["Title"] = "Dashboard"; }
+
+<h2>Welcome, @User.Identity?.Name</h2>
+<p class="text-muted">
+    Real-time soil telemetry and drone imagery for large-scale farms.
+    Data flows: Web / sensors &rarr; HTTP function &rarr; Storage Queue &rarr; Queue function &rarr; Table Storage.
+</p>
+
+<div class="row mb-4">
+    <div class="col-md-4"><a class="btn btn-success w-100 py-3" asp-controller="Telemetry" asp-action="Index">View telemetry</a></div>
+    <div class="col-md-4"><a class="btn btn-outline-success w-100 py-3" asp-controller="Media" asp-action="Index">Drone images &amp; media</a></div>
+    <div class="col-md-4"><a class="btn btn-outline-secondary w-100 py-3" href="/health">Health check</a></div>
+</div>
+
+<h5>Latest readings - @Model.FarmId</h5>
+@if (!Model.Readings.Any())
+{
+    <p class="text-muted">No readings yet. Go to Telemetry and click "Send test readings".</p>
+}
+else
+{
+    <table class="table table-sm table-striped">
+        <thead><tr><th>Time (UTC)</th><th>Sensor</th><th>Type</th><th>Moisture %</th><th>Temp &deg;C</th><th>pH</th></tr></thead>
+        <tbody>
+        @foreach (var r in Model.Readings)
+        {
+            <tr>
+                <td>@r.ReadingTimeUtc.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                <td>@r.SensorId</td>
+                <td>@r.EventType</td>
+                <td>@r.SoilMoisture.ToString("0.0")</td>
+                <td>@r.SoilTemperature.ToString("0.0")</td>
+                <td>@r.Ph.ToString("0.0")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
